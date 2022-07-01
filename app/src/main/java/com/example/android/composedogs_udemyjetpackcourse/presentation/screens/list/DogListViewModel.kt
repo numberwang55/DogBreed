@@ -87,7 +87,7 @@ class DogListViewModel @Inject constructor(
                 }
             }
         }
-        Toast.makeText(getApplication(), "Fetched from Remote Source", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(getApplication(), "Fetched from Remote Source", Toast.LENGTH_SHORT).show()
     }
 
     private fun fetchFromDatabase() {
