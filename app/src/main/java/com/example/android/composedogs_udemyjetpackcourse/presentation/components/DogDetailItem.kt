@@ -1,10 +1,7 @@
 package com.example.android.composedogs_udemyjetpackcourse.presentation.components
 
 import android.graphics.drawable.Drawable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,12 +45,18 @@ fun DogDetailItem(
         }
     }
     Column(
-        Modifier.fillMaxSize(),
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = dog.bredFor ?: "")
-        Text(text = dog.temperament ?: "", textAlign = TextAlign.Center)
+        dog.bredFor?.let {
+            Text(text = it)
+        }
+        dog.temperament?.let {
+            Text(text = it, textAlign = TextAlign.Center)
+        }
         Text(text = dog.lifespan ?: "")
         Text(text = "${dog.weight?.metricWeight ?: ""} kilograms")
         Text(text = "${dog.height?.metricHeight ?: ""} centimetres")
