@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AppSettings(
     val StoredTime: Long = 5L,
-    val cacheDuration: Int = 10
+    val cacheDuration: Int = 60
 )

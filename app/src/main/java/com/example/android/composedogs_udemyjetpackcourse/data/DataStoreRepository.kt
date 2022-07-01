@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.dataStore
 import com.example.android.composedogs_udemyjetpackcourse.data.app_settings.AppSettings
 import com.example.android.composedogs_udemyjetpackcourse.data.app_settings.AppSettingsSerializer
-import com.example.android.composedogs_udemyjetpackcourse.util.Constants.CACHE_DURATION
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map

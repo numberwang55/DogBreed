@@ -26,7 +26,7 @@ class DogListViewModel @Inject constructor(
     var state by mutableStateOf(DogListState())
     var refreshTime = 1 * 60 * 1000 * 1000 * 1000L
     var timeState by mutableStateOf(0L)
-    var cachedDurationState by mutableStateOf("0")
+    var cachedDurationState by mutableStateOf("")
 
     init {
         refresh()

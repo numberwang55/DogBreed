@@ -2,7 +2,6 @@ package com.example.android.composedogs_udemyjetpackcourse.presentation.screens.
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -15,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +31,7 @@ fun SettingsScreen(
     viewModel: DogListViewModel = hiltViewModel(),
     navigator: DestinationsNavigator
 ) {
-    var showCacheDurationDialog by remember { mutableStateOf(false) }
+    var showCustomDialog by remember { mutableStateOf(false) }
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = "Settings") },
             navigationIcon = {
@@ -51,15 +49,17 @@ fun SettingsScreen(
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CacheDurationText(showDialog = { showCacheDurationDialog = true })
-            if (showCacheDurationDialog) {
-                CacheDurationDialog(
+            CacheDurationText(showDialog = { showCustomDialog = true })
+            if (showCustomDialog) {
+                CustomDialog(
+                    dialogText = "Cached duration in seconds",
                     value = viewModel.cachedDurationState,
-                    setDismissDialog = { showCacheDurationDialog = it },
+                    setDismissDialog = { showCustomDialog = it },
                     setValue = { viewModel.cachedDurationState = it },
                     updateCachedTime = { time ->
                         viewModel.setCachedDuration(time)
-                    }
+                    },
+                    isSettingsScreen = true
                 )
             }
         }
@@ -67,11 +67,15 @@ fun SettingsScreen(
 }
 
 @Composable
-fun CacheDurationDialog(
-    value: String,
+fun CustomDialog(
+    dialogText: String,
+    value: String = "",
     setDismissDialog: (Boolean) -> Unit,
-    setValue: (String) -> Unit,
-    updateCachedTime: (Int) -> Unit
+    setValue: (String) -> Unit = {},
+    updateCachedTime: (Int) -> Unit = {},
+    isSettingsScreen: Boolean = false,
+    isPermissionRequest: Boolean = false,
+    onOkClickPermissionRequest: () -> Unit = {}
 ) {
     Dialog(
         onDismissRequest = { setDismissDialog(false) }
@@ -89,58 +93,67 @@ fun CacheDurationDialog(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Cached duration in seconds")
+                        Text(text = dialogText, modifier = Modifier.weight(1f))
                         Icon(
                             imageVector = Icons.Default.Cancel,
                             contentDescription = null,
-                            modifier = Modifier.clickable { setDismissDialog(false) }
+                            modifier = Modifier
+                                .clickable { setDismissDialog(false) }
                         )
                     }
                     Spacer(modifier = Modifier.height(20.dp))
-                    TextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(
-                                BorderStroke(2.dp, color = Color.Green),
-                                shape = RoundedCornerShape(50)
+                    if (isSettingsScreen) {
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    BorderStroke(2.dp, color = Color.Green),
+                                    shape = RoundedCornerShape(50)
+                                ),
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
                             ),
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Refresh,
-                                contentDescription = null,
-                                tint = Color.Green.copy(alpha = 0.5f),
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .height(20.dp)
-                            )
-                        },
-                        placeholder = { Text(text = "Enter time in seconds") },
-                        value = value,
-                        onValueChange = { setValue(it) },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        singleLine = true,
-                        label = { Text(text = "Seconds") },
-                    )
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Refresh,
+                                    contentDescription = null,
+                                    tint = Color.Green.copy(alpha = 0.5f),
+                                    modifier = Modifier
+                                        .width(20.dp)
+                                        .height(20.dp)
+                                )
+                            },
+                            placeholder = { Text(text = "Enter time in seconds") },
+                            value = value,
+                            onValueChange = { setValue(it) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                            label = { Text(text = "Seconds") },
+                        )
+                    }
                     Spacer(modifier = Modifier.height(20.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End,
                     ) {
-                        Text(
-                            text = "CANCEL",
-                            modifier = Modifier.clickable { setDismissDialog(false) }
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
+                        if (isSettingsScreen) {
+                            Text(
+                                text = "CANCEL",
+                                modifier = Modifier.clickable { setDismissDialog(false) }
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                        }
                         Text(
                             text = "OK",
                             modifier = Modifier.clickable {
-                                updateCachedTime(value.toInt())
+                                if (isSettingsScreen) {
+                                    updateCachedTime(value.toInt())
+                                }
                                 setDismissDialog(false)
+                                if (isPermissionRequest)
+                                    onOkClickPermissionRequest()
                             }
                         )
                     }

@@ -55,7 +55,7 @@ fun DogDetailItem(
         Text(text = dog.bredFor ?: "")
         Text(text = dog.temperament ?: "", textAlign = TextAlign.Center)
         Text(text = dog.lifespan ?: "")
-        Text(text = "${dog.weight?.metricWeight ?: ""} Kilograms")
-        Text(text = "${dog.height?.metricHeight ?: ""} Centimetres")
+        Text(text = "${dog.weight?.metricWeight ?: ""} kilograms")
+        Text(text = "${dog.height?.metricHeight ?: ""} centimetres")
     }
 }
